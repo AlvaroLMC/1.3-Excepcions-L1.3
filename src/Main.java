@@ -4,64 +4,56 @@ import java.io.IOException;
 import java.util.*;
 import java.io.FileWriter;
 
-
 public class Main {
     static Scanner scanner = new Scanner(System.in);
-    public static void main(String[] args) {
-        String archivo = "countries.txt";
-        HashMap<String, String> paisesCapitales = new HashMap<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] partes = linea.split(" ");
-                if (partes.length == 2) {
-                    String pais = partes[0].trim();
-                    String capital = partes[1].trim();
-                    paisesCapitales.put(pais, capital);
+    public static void main(String[] args) {
+        String fileName = "countries.txt";
+        HashMap<String, String> countryCapitals = new HashMap<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length == 2) {
+                    String country = parts[0].trim();
+                    String capital = parts[1].trim();
+                    countryCapitals.put(country, capital);
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error al leer el archivo: " + e.getMessage());
+            System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        // Mostrar el contenido del HashMap
-        System.out.println("Contenido del HashMap:");
-        for (String pais : paisesCapitales.keySet()) {
-            System.out.println("País: " + pais + " - Capital: " + paisesCapitales.get(pais));
-        }
-
-        System.out.println("Ingrese el nombre de usuario: ");
-        String nombre = scanner.nextLine();
+        System.out.println("Enter your username: ");
+        String username = scanner.nextLine();
 
         int count = 0;
-        int aciertos = 0;
+        int score = 0;
 
         while (count < 10) {
-            List<String> claves = new ArrayList<>(paisesCapitales.keySet());
+            List<String> keys = new ArrayList<>(countryCapitals.keySet());
             Random rand = new Random();
-            int indiceAleatorio = rand.nextInt(claves.size());
+            int randomIndex = rand.nextInt(keys.size());
 
+            String selectedCountry = keys.get(randomIndex);
+            System.out.println((count + 1) + ". Country: " + selectedCountry + " - Capital: ");
+            String enteredCapital = scanner.nextLine();
 
-            String paisSeleccionado = claves.get(indiceAleatorio);
-            System.out.println((count+1) + ". País: " + paisSeleccionado + " - Capital: ");
-            String capitalIngresada = scanner.nextLine();
-
-            if (paisesCapitales.get(paisSeleccionado).equalsIgnoreCase(capitalIngresada)) {
-                aciertos++;
+            if (countryCapitals.get(selectedCountry).equalsIgnoreCase(enteredCapital)) {
+                score++;
             }
 
             count++;
         }
 
-        String categoria = "categoria.txt";
+        String outputFile = "categories.txt";
 
-        try (FileWriter writer = new FileWriter(categoria, true)) {
-            writer.write(nombre + " " + aciertos + "\n");
-            System.out.println("Datos guardados exitosamente");
-
+        try (FileWriter writer = new FileWriter(outputFile, true)) {
+            writer.write(username + " " + score + "\n");
+            System.out.println("Data saved successfully.");
         } catch (IOException e) {
-            System.out.println("Error al guardar los datos: " + e.getMessage());
+            System.out.println("Error saving the data: " + e.getMessage());
         }
     }
 }
